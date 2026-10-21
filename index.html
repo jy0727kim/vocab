@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E6B73">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="회사 단어장">
+<title>회사 단어장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F2F5F6; --card:#FFFFFF; --ink:#14262B; --mute:#5B6E73; --line:#D3DDE0;
+  --acc:#0E6B73; --acc-ink:#FFFFFF; --accbg:#E1F0F1;
+  --ok:#1F7A46; --okbg:#E3F3EA; --bad:#B8400E; --badbg:#FBE9E0;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --serif:'Noto Serif KR','Batang','AppleMyungjo',Georgia,serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F1A1D; --card:#172529; --ink:#E6EEF0; --mute:#93A8AD; --line:#2B3E43;
+    --acc:#4FB7BF; --acc-ink:#0A1C1F; --accbg:#183338;
+    --ok:#5CC48A; --okbg:#173326; --bad:#F08A5A; --badbg:#3A2218;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F1A1D; --card:#172529; --ink:#E6EEF0; --mute:#93A8AD; --line:#2B3E43;
+  --acc:#4FB7BF; --acc-ink:#0A1C1F; --accbg:#183338;
+  --ok:#5CC48A; --okbg:#173326; --bad:#F08A5A; --badbg:#3A2218;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;padding-bottom:84px;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px}
+header h1{font-family:var(--serif);font-size:26px;margin:0;letter-spacing:-.01em}
+header p{margin:2px 0 0;color:var(--mute);font-size:13px}
+h2{font-size:17px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}
+.row{display:flex;gap:8px;align-items:center}
+.row.wrap-r{flex-wrap:wrap}
+input[type=text]{flex:1;min-width:0;font:inherit;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+textarea{display:block;width:100%;min-height:130px;font:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);resize:vertical}
+textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.modes{display:flex;gap:8px;margin-top:14px}
+.modes button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px;font-weight:500}
+.modes button[aria-pressed="true"]{background:var(--accbg);border-color:var(--acc);color:var(--acc);font-weight:600}
+.brow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.brow .bi{flex:1;min-width:0}
+.brow .bw{font-family:var(--serif);font-weight:700;font-size:18px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 16px;font-weight:500}
+.btn.pri{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.block{width:100%}
+.mute{color:var(--mute)}
+.small{font-size:13px}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--badbg);color:var(--bad);font-size:14px}
+.note{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--accbg);color:var(--ink);font-size:14px}
+
+/* 사전 항목 */
+.entry .hw{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.entry .word{font-family:var(--serif);font-size:30px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.entry .ipa{color:var(--mute);font-size:15px}
+.spk{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:inline-grid;place-items:center;padding:0;flex:none}
+.spk svg{width:18px;height:18px;fill:none;stroke:var(--acc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.spk.sm{width:30px;height:30px}.spk.sm svg{width:15px;height:15px}
+.sense{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.sense:first-of-type{margin-top:12px}
+.pos{display:inline-block;font-size:12px;font-weight:600;color:var(--acc);background:var(--accbg);border-radius:6px;padding:1px 8px;margin-right:6px}
+.ko{font-weight:600;font-size:16px}
+.en{margin:4px 0 0;color:var(--ink)}
+.ex{margin:8px 0 0;padding-left:12px;border-left:3px solid var(--line)}
+.ex .e{display:flex;gap:6px;align-items:flex-start;font-style:italic}
+.ex .k{color:var(--mute);font-size:14px;margin-top:2px}
+
+/* 단어장 목록 */
+.group{margin-top:22px}
+.group h3{margin:0 0 8px;font-size:14px;font-weight:600;color:var(--mute);display:flex;justify-content:space-between}
+.item{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.item .top{display:flex;align-items:stretch}
+.item .top>button.head{all:unset;box-sizing:border-box;display:flex;flex:1;min-width:0;gap:10px;align-items:center;padding:12px 6px 12px 14px;cursor:pointer}
+.item .top>button.head:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.item .x{flex:none;min-width:48px;border:0;background:none;color:var(--mute);font-size:24px;line-height:1;padding:0 12px;cursor:pointer}
+.item .x.armed{color:var(--bad);font-size:13px;font-weight:600;white-space:nowrap}
+.item .iw{font-family:var(--serif);font-weight:700;font-size:18px}
+.item .im{color:var(--mute);font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{font-size:12px;font-weight:600;border-radius:6px;padding:1px 8px;background:var(--badbg);color:var(--bad);flex:none}
+.item .detail{padding:0 14px 14px;border-top:1px solid var(--line)}
+.item .detail .entry .sense:first-of-type{margin-top:6px;border-top:none;padding-top:0}
+.danger{color:var(--bad);border-color:var(--bad)}
+.edit label{display:block;margin-top:10px}
+.edit input[type=text]{width:100%;margin-top:4px;font-size:15px;padding:9px 11px}
+
+/* 퀴즈 */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.seg{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+.seg button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px;text-align:left}
+.seg button[aria-pressed="true"]{border-color:var(--acc);background:var(--accbg);box-shadow:inset 0 0 0 1px var(--acc)}
+.seg b{display:block;font-size:14px}
+.seg span{font-size:12px;color:var(--mute)}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 2px}
+.prog i{display:block;height:100%;background:var(--acc)}
+.q-word{font-family:var(--serif);font-size:34px;font-weight:700;margin:6px 0 0}
+.q-ko{font-size:20px;font-weight:600;margin:6px 0}
+.opts{display:grid;gap:8px;margin-top:14px}
+.opt{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;text-align:left;font-size:15px}
+.opt.right{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opt.wrong{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.verdict{margin-top:14px;padding:10px 12px;border-radius:10px;font-weight:600}
+.verdict.ok{background:var(--okbg);color:var(--ok)}
+.verdict.no{background:var(--badbg);color:var(--bad)}
+.score{display:flex;gap:10px;margin-top:12px}
+.score div{flex:1;border-radius:12px;padding:12px;text-align:center}
+.score .r{background:var(--okbg);color:var(--ok)}
+.score .w{background:var(--badbg);color:var(--bad)}
+.score b{display:block;font-size:30px;font-family:var(--serif);line-height:1.1}
+.rl{list-style:none;margin:8px 0 0;padding:0}
+.rl li{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.rl li b{font-family:var(--serif);min-width:90px}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav.tabs button{flex:1;border:0;background:none;padding:12px 0 10px;font-size:14px;color:var(--mute);font-weight:500}
+nav.tabs button[aria-current="page"]{color:var(--acc);font-weight:600;box-shadow:inset 0 3px 0 var(--acc)}
+.empty{text-align:center;color:var(--mute);padding:36px 12px}
+.dots::after{content:'';display:inline-block;width:1.2em;text-align:left;animation:d 1.2s steps(4,end) infinite}
+@keyframes d{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+@media (prefers-reduced-motion: reduce){.dots::after{animation:none;content:'…'}}
+
+/* ===== 퀴즈: 우주 오페라 테마 (원작 이름과 로고는 쓰지 않은 오리지널 디자인) ===== */
+body.space{
+  color-scheme:dark;
+  --bg:#05070F; --card:rgba(12,20,44,.82); --ink:#E8F0FF; --mute:#8EA2C9; --line:#243662;
+  --acc:#4FD1FF; --acc-ink:#021018; --accbg:rgba(79,209,255,.13);
+  --ok:#5CFFB0; --okbg:rgba(92,255,176,.12); --bad:#FF7A66; --badbg:rgba(255,107,90,.15);
+  --gold:#FFD36B; --orb:'Orbitron','IBM Plex Sans KR',system-ui,sans-serif;
+  background-color:#05070F;
+  background-image:
+    radial-gradient(1.2px 1.2px at 20px 30px,#fff,transparent),
+    radial-gradient(1px 1px at 90px 120px,rgba(255,255,255,.8),transparent),
+    radial-gradient(1.6px 1.6px at 160px 60px,#9fdcff,transparent),
+    radial-gradient(1px 1px at 230px 200px,#fff,transparent),
+    radial-gradient(1px 1px at 60px 220px,rgba(255,255,255,.7),transparent),
+    radial-gradient(ellipse at 50% -10%,rgba(79,209,255,.20),transparent 60%),
+    radial-gradient(ellipse at 100% 100%,rgba(140,90,255,.14),transparent 55%);
+  background-size:260px 260px,260px 260px,260px 260px,260px 260px,260px 260px,100% 100%,100% 100%;
+  background-attachment:fixed;
+}
+body.space header h1{font-family:var(--orb);font-size:20px;letter-spacing:.04em;text-shadow:0 0 14px rgba(79,209,255,.5)}
+body.space header p{display:none}
+body.space .card{border-color:rgba(79,209,255,.32);box-shadow:0 0 0 1px rgba(79,209,255,.05),0 8px 30px rgba(0,0,0,.35);backdrop-filter:blur(3px)}
+body.space .card h2{font-family:var(--orb);font-size:13px;letter-spacing:.1em;color:var(--acc);font-weight:600}
+body.space .btn{background:rgba(8,14,32,.7)}
+body.space .btn.pri{background:linear-gradient(180deg,#6FDCFF,#2BA8E0);color:var(--acc-ink);border-color:#7FE3FF;font-weight:600;box-shadow:0 0 18px rgba(79,209,255,.4)}
+body.space .btn.pri:disabled{box-shadow:none}
+body.space nav.tabs{backdrop-filter:blur(6px)}
+body.space .chip{background:rgba(8,14,32,.7)}
+body.space .chip[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);box-shadow:0 0 14px rgba(79,209,255,.5)}
+body.space .seg button{background:rgba(8,14,32,.7)}
+body.space .seg button[aria-pressed="true"]{border-color:var(--acc);background:var(--accbg);box-shadow:0 0 16px rgba(79,209,255,.3),inset 0 0 0 1px var(--acc)}
+body.space .seg b{font-size:15px}
+body.space input[type=text]{background:#060B1A;border-color:var(--line)}
+body.space .note{background:var(--accbg)}
+.hero{text-align:center;padding:10px 0 4px;perspective:500px}
+.hero-t{font-family:var(--orb,'Orbitron',sans-serif);font-weight:800;font-size:30px;letter-spacing:.14em;color:var(--ink);transform:rotateX(16deg);text-shadow:0 0 22px rgba(79,209,255,.75),0 0 2px #fff}
+.hero-s{margin-top:6px;color:var(--mute);font-size:14px}
+.hud{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hud .hi{font-family:var(--orb,'Orbitron',sans-serif);font-size:12px;letter-spacing:.08em;color:var(--mute);border:1px solid var(--line);border-radius:8px;padding:5px 10px;background:rgba(8,14,32,.6)}
+.hud .hi b{font-size:16px;color:var(--ink);margin-left:4px}
+.hud .hi.score b{color:var(--gold)}
+.hud .hi.combo b{color:var(--ok);text-shadow:0 0 10px rgba(92,255,176,.7)}
+.hud .sp{flex:1}
+.cap{margin:14px 0 2px;font-size:13px;color:var(--acc);letter-spacing:.06em}
+body.space .prog{height:9px;background:#0B1530;border:1px solid var(--line);border-radius:6px;margin:12px 0 4px}
+body.space .prog i{border-radius:5px;background:linear-gradient(90deg,#2BA8E0,#9FF0FF 85%,#fff);box-shadow:0 0 12px 2px rgba(79,209,255,.7);transition:width .5s}
+body.space .q-word{font-size:36px;text-shadow:0 0 18px rgba(79,209,255,.35)}
+body.space .q-ko{font-size:21px}
+body.space .opt{background:rgba(8,14,32,.7)}
+body.space .opt:hover:not(:disabled){border-color:var(--acc);box-shadow:0 0 14px rgba(79,209,255,.35)}
+body.space .opt.right{box-shadow:0 0 20px rgba(92,255,176,.45)}
+body.space .opt.wrong{animation:shake .35s}
+body.space .verdict{font-family:inherit;border:1px solid currentColor}
+body.space .verdict .pts{float:right;font-family:var(--orb);color:var(--gold)}
+body.space .spk{background:rgba(8,14,32,.7)}
+.launch{margin-top:18px;padding:16px;font-family:var(--orb,'Orbitron',sans-serif);font-size:17px;letter-spacing:.14em}
+.rank{text-align:center;padding:6px 0 2px}
+.rank .rt{font-family:var(--orb,'Orbitron',sans-serif);font-weight:800;font-size:22px;letter-spacing:.1em;color:var(--gold);text-shadow:0 0 18px rgba(255,211,107,.6)}
+.rank .rs{color:var(--mute);font-size:13px;margin-top:2px}
+.rank .big{font-family:var(--orb,'Orbitron',sans-serif);font-weight:800;font-size:40px;color:var(--ink);margin:10px 0 2px;text-shadow:0 0 18px rgba(79,209,255,.6)}
+.stats{display:flex;gap:8px;margin-top:12px}
+.stats div{flex:1;text-align:center;border:1px solid var(--line);border-radius:10px;padding:8px 4px;background:rgba(8,14,32,.6);font-size:12px;color:var(--mute)}
+.stats b{display:block;font-family:var(--orb,'Orbitron',sans-serif);font-size:18px;color:var(--ink)}
+.warp{position:fixed;inset:0;z-index:30;pointer-events:none;overflow:hidden;animation:warpbg 1.1s ease-in forwards}
+.warp::before{content:'';position:absolute;inset:-60%;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(170,225,255,.95) 0 .55deg,transparent .55deg 4.5deg);animation:warpzoom 1.1s cubic-bezier(.55,0,1,.55) forwards}
+@keyframes warpzoom{from{transform:scale(.08);opacity:0}25%{opacity:1}to{transform:scale(3.2);opacity:1}}
+@keyframes warpbg{0%{background:rgba(0,0,0,0)}20%{background:rgba(0,2,10,.92)}80%{background:rgba(0,2,10,.92)}92%{background:rgba(190,235,255,.85)}100%{background:rgba(190,235,255,0);opacity:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (prefers-reduced-motion: reduce){.warp{display:none}body.space .opt.wrong{animation:none}body.space .prog i{transition:none}}
+
+/* ===== 사전 화면: 품사 묶음 + 번호 + 예문(듣기/반복) ===== */
+.posh{color:var(--acc);font-size:14px;font-weight:600;margin:18px 0 4px}
+.sn{display:flex;gap:8px;margin-top:12px}
+.sn .no{flex:none;min-width:1.5em;font-weight:600;color:var(--mute)}
+.sn .sb{flex:1;min-width:0}
+.smain{font-size:16px;font-weight:600;line-height:1.5}
+.sdef{margin-top:2px;color:var(--mute);font-size:13px}
+.ex2{margin-top:10px;padding-left:12px;border-left:3px solid var(--line)}
+.ex2 .e{font-size:15px}
+.ex2 .k{color:var(--mute);font-size:14px;margin-top:2px}
+.pill{display:inline-flex;margin:8px 0 4px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.pill button{border:0;background:none;padding:6px 14px;display:grid;place-items:center;cursor:pointer}
+.pill button+button{border-left:1px solid var(--line)}
+.pill svg{width:18px;height:18px;fill:none;stroke:var(--acc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pill button.on{background:var(--accbg)}
+.pill button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+/* ===== 퀴즈 배경 캐릭터 (오리지널 우주선과 로봇) ===== */
+#decor{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none}
+body.space #decor{display:block}
+.wrap{position:relative;z-index:1}
+.planet{position:absolute;top:-70px;right:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#b794ff,#5b3fd0 55%,#1c1450);box-shadow:0 0 50px rgba(140,90,255,.35);opacity:.8}
+.planet::after{content:'';position:absolute;left:-30%;right:-30%;top:46%;height:22%;border-radius:50%;border:3px solid rgba(255,211,107,.55);transform:rotate(-14deg)}
+.ship{position:absolute;top:13%;left:0;width:96px;animation:fly 38s linear infinite}
+.ship svg{width:100%;height:auto;display:block}
+.flame{transform-box:fill-box;transform-origin:100% 50%;animation:flick .18s steps(2) infinite}
+.drone{position:absolute;left:3%;top:48%;width:110px;opacity:.4;animation:bob 7s ease-in-out infinite}
+.drone svg{width:100%;height:auto;display:block}
+.bot{display:inline-block;vertical-align:middle;flex:none;line-height:0}
+.bot svg{width:40px;height:40px}
+.bot.happy{animation:hop .5s}
+.bot.sad{animation:shake .4s}
+.herobot{display:grid;place-items:center;margin-bottom:2px}
+.herobot svg{width:64px;height:64px}
+@keyframes fly{from{transform:translateX(-140px) rotate(-5deg)}to{transform:translateX(calc(100vw + 40px)) rotate(4deg)}}
+@keyframes bob{0%,100%{transform:translateY(-12px) rotate(-3deg)}50%{transform:translateY(12px) rotate(3deg)}}
+@keyframes flick{from{transform:scaleX(1)}to{transform:scaleX(.7)}}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion: reduce){.ship,.drone,.flame,.bot.happy,.bot.sad{animation:none}.ship{left:68%}}
+</style>
+</head>
+<body>
+<div id="decor" aria-hidden="true"></div>
+<div class="wrap" id="app"></div>
+<nav class="tabs" id="tabs"></nav>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 작은 도구들 ---------- */
+  var $ = function (s) { return document.querySelector(s); };
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function fmtDate(s) {
+    var d = new Date(s + 'T00:00:00');
+    if (isNaN(d)) return s;
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 (' + '일월화수목금토'[d.getDay()] + ')';
+  }
+  function langOf(w) { return w && w.lang === 'ko' ? 'ko' : 'en'; }
+  function ttsLang(w) { return langOf(w) === 'ko' ? 'ko-KR' : ''; }
+  function wordId(w) {
+    var s = String(w).toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-|-$/g, '');
+    return s || ('w' + Date.now());
+  }
+  var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+  var HANGUL = /[가-힣]/;
+
+  /* ---------- 상태 ---------- */
+  var S = {
+    tab: 'add', words: [], q: '', loading: false, found: null, foundKo: '',
+    msg: '', note: '', addMode: 'one', bulkText: '',
+    bulk: { loading: false, prog: '', results: [], bad: [], skipped: 0 },
+    open: {}, delArm: null, edit: null, krKey: '', krBase: '', foundEn: '', oxId: '', oxKey: '', oxBase: '', email: '', storageOK: true,
+    quiz: { dates: {}, onlyWrong: false, mode: 'mc', run: null }
+  };
+
+  /* ---------- 저장 (이 기기의 브라우저에 저장) ---------- */
+  var LS_KEY = 'companyWords:v2';
+  var LS_MAIL = 'companyWords:mail';
+  var LS_KRKEY = 'companyWords:krkey';
+  // 한국어기초사전 인증키 기본값 (개인용). 비워두려면 '' 로 바꾸세요. 설정 화면에서 입력한 키가 있으면 그게 우선이에요.
+  var KR_KEY_BUILTIN = '901BC99ADF6F3680EA3E6D28F97C6E68';
+  var LS_KRBASE = 'companyWords:krbase';
+  // Oxford Dictionaries API 샌드박스 기본값 (개인용 시험 키). 유료 키로 바꾸면 이 파일에 적지 말고 설정 화면에 입력하세요.
+  var OX_ID_BUILTIN = 'F4674A8D';
+  var OX_KEY_BUILTIN = '877ffc37bdea589d5d614975c641e9cc';
+  var OX_BASE_DEFAULT = 'https://od-api-sandbox.oxforddictionaries.com/api/v2';
+  var LS_OXID = 'companyWords:oxid', LS_OXKEY = 'companyWords:oxkey', LS_OXBASE = 'companyWords:oxbase';
+  function krMeaning(senses) {
+    return (senses || []).slice(0, 2).map(function (s) {
+      var d = String(s.koDef || '').trim().replace(/[.\s]+$/, '');
+      return d.length > 50 ? d.slice(0, 48) + '…' : d;
+    }).filter(Boolean).join(' / ');
+  }
+  function migrate(arr) {
+    (arr || []).forEach(function (w) {
+      if (w && w.lang === 'ko' && w.enm === undefined) {
+        if (w.ko && !/[가-힣]/.test(w.ko)) { w.enm = w.ko; w.ko = krMeaning(w.senses); }
+        else w.enm = '';
+      }
+    });
+    return arr;
+  }
+  function lsLoad() {
+    try { return migrate(JSON.parse(localStorage.getItem(LS_KEY) || '[]')); } catch (e) { S.storageOK = false; return []; }
+  }
+  function lsSave() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(S.words)); } catch (e) { S.storageOK = false; }
+  }
+  function putWord(w, silent) {
+    var i = S.words.findIndex(function (x) { return x.id === w.id; });
+    if (i >= 0) S.words[i] = w; else S.words.push(w);
+    lsSave();
+    if (!silent) render();
+  }
+  function delWord(id) {
+    S.words = S.words.filter(function (x) { return x.id !== id; });
+    lsSave(); render();
+  }
+
+  /* ---------- 발음 ---------- */
+  var canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+  function speak(text, lang) {
+    if (!canSpeak || !text) return;
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      var L = lang || 'en-US';
+      u.lang = L; u.rate = 0.9;
+      var re = new RegExp('^' + L.slice(0, 2) + '[-_]' + L.slice(3) + '$', 'i');
+      var v = speechSynthesis.getVoices().find(function (x) { return re.test(x.lang); });
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { /* 소리가 안 나도 앱은 계속 */ }
+  }
+  if (canSpeak) { try { speechSynthesis.getVoices(); } catch (e) {} }
+  var loopKey = null;
+  function stopLoop() {
+    loopKey = null;
+    try { if (canSpeak) speechSynthesis.cancel(); } catch (e) {}
+    var on = document.querySelectorAll('.pill .on');
+    for (var i = 0; i < on.length; i++) on[i].classList.remove('on');
+  }
+  function toggleLoop(text, lang, btn) {
+    if (!canSpeak || !text) return;
+    if (loopKey === text) { stopLoop(); return; }
+    stopLoop();
+    loopKey = text;
+    if (btn) btn.classList.add('on');
+    var count = 0, L = lang || 'en-US';
+    var re = new RegExp('^' + L.slice(0, 2) + '[-_]' + L.slice(3) + '$', 'i');
+    (function again() {
+      if (loopKey !== text) return;
+      if (count >= 20) { stopLoop(); return; }
+      count++;
+      try {
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = L; u.rate = 0.9;
+        var v = speechSynthesis.getVoices().find(function (x) { return re.test(x.lang); });
+        if (v) u.voice = v;
+        u.onend = function () { setTimeout(again, 350); };
+        u.onerror = function () { if (loopKey === text) stopLoop(); };
+        speechSynthesis.speak(u);
+      } catch (e) { stopLoop(); }
+    })();
+  }
+  function playWord(text, audio, lang) {
+    if (audio) {
+      try {
+        var a = new Audio(audio);
+        a.play().catch(function () { speak(text, lang); });
+        return;
+      } catch (e) { /* 아래 기본값 */ }
+    }
+    speak(text, lang);
+  }
+  function spkBtn(text, small, audio, lang) {
+    return '<button class="spk' + (small ? ' sm' : '') + '" data-act="speak" data-t="' + esc(text) + '" data-a="' + esc(audio || '') + '" data-l="' + esc(lang || '') +
+      '" aria-label="발음 듣기">' + ICON + '</button>';
+  }
+
+  /* ---------- 무료 API 호출 ---------- */
+  var DICT = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+  var WIKT = 'https://en.wiktionary.org/api/rest_v1/page/definition/';
+  var MM = 'https://api.mymemory.translated.net/get?langpair=en%7Cko&q=';
+
+  async function fetchJson(url, ms, headers) {
+    var ctl = new AbortController();
+    var t = setTimeout(function () { ctl.abort(); }, ms || 12000);
+    try {
+      var r = await fetch(url, headers ? { signal: ctl.signal, headers: headers } : { signal: ctl.signal });
+      var data = null;
+      try { data = await r.json(); } catch (e) { /* JSON이 아니어도 status는 쓴다 */ }
+      return { status: r.status, data: data };
+    } finally { clearTimeout(t); }
+  }
+
+  var POS_KO = { noun: '명', verb: '동', adjective: '형', adverb: '부', preposition: '전', conjunction: '접', pronoun: '대', interjection: '감', abbreviation: '약' };
+
+  function pickSenses(all, max) {
+    var picks = [];
+    function add(s) { if (s && picks.indexOf(s) < 0 && picks.length < (max || 3)) picks.push(s); }
+    var seenPos = {};
+    all.forEach(function (s) {          // 1) 품사마다 하나씩 (예문 있는 걸 우선)
+      if (seenPos[s.pos]) return;
+      seenPos[s.pos] = 1;
+      add(all.find(function (x) { return x.pos === s.pos && x.ex; }) || s);
+    });
+    all.forEach(function (s) { if (s.ex) add(s); });   // 2) 예문 있는 뜻으로 채우기
+    all.forEach(function (s) { add(s); });             // 3) 그래도 모자라면 나머지
+    return picks;
+  }
+
+  function stripHtml(x) {
+    try {
+      return (new DOMParser().parseFromString(String(x || ''), 'text/html').body.textContent || '').replace(/\s+/g, ' ').trim();
+    } catch (e) { return String(x || '').replace(/<[^>]*>/g, '').trim(); }
+  }
+  var WIKT_SKIP = /^(plural|third-person|present participle|simple past|past participle|alternative|obsolete|misspelling|inflection|comparative|superlative|archaic|eye dialect|nonstandard)\b|ISO 639|language code|given name|surname|^(a|the) (letter|character|symbol)\b/i;
+  var SKIP_POS = ['symbol', 'letter', 'number', 'numeral', 'prefix', 'suffix', 'infix', 'interfix', 'circumfix', 'affix', 'punctuation mark', 'diacritical mark', 'character', 'han character', 'syllable', 'contraction'];
+  var POS_RANK = { noun: 0, verb: 1, adjective: 2, adverb: 3 };
+  function parseWikt(data, term, max) {
+    var arr = data && data.en;
+    if (!Array.isArray(arr) || !arr.length) return null;
+    var all = [];
+    arr.forEach(function (m, mi) {
+      var posRaw = String(m.partOfSpeech || '');
+      if (SKIP_POS.indexOf(posRaw.toLowerCase()) >= 0) return;
+      (m.definitions || []).forEach(function (d) {
+        var en = stripHtml(d.definition);
+        if (!en) return;
+        var ex = '';
+        if (d.parsedExamples && d.parsedExamples[0] && d.parsedExamples[0].example) ex = stripHtml(d.parsedExamples[0].example);
+        else if (d.examples && d.examples[0]) ex = stripHtml(d.examples[0]);
+        var rank = POS_RANK[posRaw.toLowerCase()];
+        all.push({ pos: POS_KO[posRaw.toLowerCase()] || posRaw, en: en, ex: ex, _r: rank == null ? 9 : rank, _i: all.length });
+      });
+    });
+    var good = all.filter(function (s) { return !WIKT_SKIP.test(s.en); });
+    var pool = good.length ? good : all;
+    pool.sort(function (a, b) { return a._r - b._r || a._i - b._i; });   // 명사, 동사, 형용사, 부사 순 (같은 품사는 원래 순서)
+    var picks = pickSenses(pool, max);
+    if (!picks.length) return null;
+    return {
+      word: term, ipa: '', audio: '', ko: '',
+      senses: picks.map(function (s) { return { pos: s.pos, en: s.en, ex: s.ex, koDef: '' }; }),
+      manual: false, source: 'wikt'
+    };
+  }
+
+  function parseOxford(d, term, max) {
+    var results = d && d.results;
+    if (!Array.isArray(results) || !results.length) return null;
+    var all = [], ipa = '', audio = '', audioUS = '';
+    results.forEach(function (r) {
+      (r.lexicalEntries || []).forEach(function (le) {
+        var posId = String((le.lexicalCategory && (le.lexicalCategory.id || le.lexicalCategory.text)) || '').toLowerCase();
+        var pos = POS_KO[posId] || posId;
+        function push(s) {
+          var def = (s.definitions && s.definitions[0]) || (s.shortDefinitions && s.shortDefinitions[0]) || '';
+          if (!def) return;
+          var ex = (s.examples && s.examples[0] && s.examples[0].text) || '';
+          all.push({ pos: pos, en: def, ex: ex });
+        }
+        (le.entries || []).forEach(function (en) {
+          (en.pronunciations || []).forEach(function (p) {
+            if (p.audioFile) {
+              if (!audio) audio = p.audioFile;
+              if (!audioUS && JSON.stringify(p.dialects || []).indexOf('American') >= 0) audioUS = p.audioFile;
+            }
+            if (!ipa && p.phoneticSpelling) ipa = '/' + p.phoneticSpelling + '/';
+          });
+          (en.senses || []).forEach(function (s) { push(s); (s.subsenses || []).forEach(push); });
+        });
+      });
+    });
+    var picks = pickSenses(all, max);
+    if (!picks.length) return null;
+    return {
+      word: term, ipa: ipa, audio: audioUS || audio, ko: '',
+      senses: picks.map(function (s) { return { pos: s.pos, en: s.en, ex: s.ex, koDef: '' }; }),
+      manual: false, source: 'oxford'
+    };
+  }
+  function oxReason(code) {
+    var sandbox = !S.oxBase || S.oxBase.indexOf('sandbox') >= 0;
+    if (code === 'blocked') return 'Oxford 사전에 직접 연결하지 못했어요. 브라우저가 막았을 수 있어요.';
+    if (code === 'notfound') return sandbox ? 'Oxford 샌드박스 키는 a로 시작하는 단어만 찾을 수 있어서 다른 사전으로 찾았어요.' : 'Oxford 사전에 없는 단어라서 다른 사전으로 찾았어요.';
+    if (code === 'auth') return 'Oxford 인증이 거절됐어요. ID와 키를 확인해 주세요.';
+    if (code === 'limit') return 'Oxford 호출 한도에 닿았어요.';
+    return 'Oxford 사전을 쓰지 못해서 다른 사전으로 찾았어요.';
+  }
+
+  function parseDict(arr, w, max) {
+    var e0 = arr[0] || {};
+    var ph = [];
+    arr.forEach(function (a) { (a.phonetics || []).forEach(function (p) { ph.push(p); }); });
+    var us = ph.find(function (p) { return p.audio && /-us\./i.test(p.audio); });
+    var withText = ph.find(function (p) { return p.text; });
+    var all = [];
+    arr.forEach(function (a) {
+      (a.meanings || []).forEach(function (m) {
+        (m.definitions || []).forEach(function (d) {
+          all.push({ pos: POS_KO[m.partOfSpeech] || m.partOfSpeech || '', en: d.definition || '', ex: d.example || '' });
+        });
+      });
+    });
+    var picks = pickSenses(all, max);
+    return {
+      word: e0.word || w,
+      ipa: (us && us.text) || (withText && withText.text) || e0.phonetic || '',
+      audio: (us && us.audio) || '',
+      ko: '',
+      senses: picks.map(function (s) { return { pos: s.pos, en: s.en, ex: s.ex, koDef: '' }; }),
+      manual: false
+    };
+  }
+
+  async function tr(text) {
+    var url = MM + encodeURIComponent(text) + (S.email ? '&de=' + encodeURIComponent(S.email) : '');
+    var r = await fetchJson(url);
+    var d = r.data || {};
+    var t = (d.responseData && d.responseData.translatedText) || '';
+    if (r.status === 429 || String(d.responseStatus) === '429' || /MYMEMORY WARNING/i.test(t)) throw { quota: true };
+    var matches = (d.matches || []).slice().sort(function (a, b) { return (b.match || 0) - (a.match || 0); })
+      .map(function (m) { return m.translation; });
+    return [t].concat(matches).filter(Boolean);
+  }
+  async function koShort(word) {
+    var list = await tr(word);
+    var out = [];
+    list.forEach(function (x) {
+      x = String(x).trim().replace(/[\s:;,.!?]+$/, '');
+      if (HANGUL.test(x) && x.length <= 18 && out.indexOf(x) < 0 && out.length < 3) out.push(x);
+    });
+    return out.join(' / ');
+  }
+
+  /* ---------- 예문 보충: Tatoeba (사람이 쓴 예문 + 한국어 번역) ---------- */
+  var TAT = 'https://tatoeba.org/eng/api_v0/search?from=eng&sort=relevance&to=kor&query=';
+  function pickKo(s) {
+    var out = '';
+    (function walk(x) {
+      if (!x || out) return;
+      if (Array.isArray(x)) { x.forEach(walk); return; }
+      if (typeof x === 'object') {
+        if (x.lang === 'kor' && x.text) { out = String(x.text); return; }
+        if (x.translations) walk(x.translations);
+      }
+    })(s && s.translations);
+    return out;
+  }
+  async function tatoebaSearch(q, koOnly) {
+    var url = TAT + encodeURIComponent(q) + (koOnly ? '&trans_filter=limit&trans_link=direct&trans_to=kor' : '');
+    var r = await fetchJson(url, 7000);
+    var res = r.data && r.data.results;
+    if (!Array.isArray(res)) return [];
+    return res.map(function (s) { return { en: String((s && s.text) || ''), ko: pickKo(s) }; })
+      .filter(function (x) { return x.en.length >= 15 && x.en.length <= 120; });
+  }
+  async function fillExamples(entry) {
+    var term = entry.word;
+    var q = term.indexOf(' ') >= 0 ? '"' + term + '"' : '=' + term;
+    var list = await tatoebaSearch(q, true);
+    if (list.length < 3) list = list.concat(await tatoebaSearch(q, false));
+    var seen = {}, uniq = [];
+    list.forEach(function (x) { if (!seen[x.en]) { seen[x.en] = 1; uniq.push(x); } });
+    uniq.sort(function (a, b) { return (b.ko ? 1 : 0) - (a.ko ? 1 : 0) || a.en.length - b.en.length; });
+    var i = 0;
+    entry.senses.forEach(function (s) {
+      if (!s.ex && uniq[i]) { s.ex = uniq[i].en; s.exKo = uniq[i].ko || ''; i++; }
+    });
+    entry.exSource = i ? 'tatoeba' : '';
+  }
+
+  async function translateSenses(senses) {
+    var quota = false;
+    for (var i = 0; i < senses.length; i++) {
+      var s = senses[i];
+      try {
+        if (!s.koDef && s.en) {
+          await sleep(200);
+          var src = /^to\s+/i.test(s.en) ? s.en.replace(/^to\s+/i, '') : s.en;
+          var t = (await tr(src))[0] || '';
+          s.koDef = HANGUL.test(t) ? t : '';
+        }
+        if (s.ex && !s.exKo) {
+          await sleep(200);
+          var t2 = (await tr(s.ex))[0] || '';
+          s.exKo = HANGUL.test(t2) ? t2 : '';
+        }
+      } catch (e) { if (e && e.quota) { quota = true; break; } }
+    }
+    return quota;
+  }
+
+  async function buildEntry(w, defer) {
+    var max = defer ? 4 : 3;
+    var r = null, freeDown = false, entry = null, oxFail = '';
+    if (S.oxId && S.oxKey) {            // 1) Oxford를 가장 먼저 시도
+      try {
+        var oxUrl = (S.oxBase || OX_BASE_DEFAULT).replace(/\/+$/, '') + '/entries/en-us/' + encodeURIComponent(w.toLowerCase()) + '?fields=definitions,examples,pronunciations&strictMatch=false';
+        var ro = await fetchJson(oxUrl, 8000, { app_id: S.oxId, app_key: S.oxKey });
+        if (ro.status === 200) {
+          entry = parseOxford(ro.data, w, max);
+          if (!entry) oxFail = 'notfound';
+        } else {
+          oxFail = ro.status === 404 ? 'notfound' : (ro.status === 401 || ro.status === 403 ? 'auth' : (ro.status === 429 ? 'limit' : 'other'));
+        }
+      } catch (e) { oxFail = 'blocked'; }
+    }
+    if (!entry) { try { r = await fetchJson(DICT + encodeURIComponent(w), 7000); } catch (e) { freeDown = true; } }
+    if (r && r.status >= 500) freeDown = true;
+    if (!freeDown && r && r.status === 200 && Array.isArray(r.data) && r.data.length) {
+      entry = parseDict(r.data, w, max);
+      entry.source = 'free';
+    }
+    var wiktDown = false;
+    if (!entry) {                       // 무료 사전이 안 되거나 단어가 없으면 Wiktionary로 한 번 더
+      var terms = [w];
+      if (w.toLowerCase() !== w) terms.push(w.toLowerCase());
+      for (var k = 0; k < terms.length && !entry; k++) {
+        try {
+          var wk = await fetchJson(WIKT + encodeURIComponent(terms[k]), 8000);
+          if (wk.status === 200) entry = parseWikt(wk.data, terms[k], max);
+          else if (wk.status !== 404) wiktDown = true;
+        } catch (e) { wiktDown = true; }
+      }
+    }
+    var dictDown = false;
+    if (!entry) {
+      entry = { word: w, ipa: '', audio: '', ko: '', senses: [], manual: true };
+      dictDown = freeDown && wiktDown;  // 둘 다 연결이 안 될 때만 "서버 문제"로 본다
+    }
+    entry.quota = false;
+    entry.dictDown = dictDown;
+    entry.oxFail = oxFail;
+    entry.deferred = !!defer;
+    if (!entry.manual && entry.senses.some(function (s) { return !s.ex; })) {
+      try { await fillExamples(entry); } catch (e) { /* 예문을 못 가져와도 계속 */ }
+    }
+    try {
+      entry.ko = await koShort(entry.word);
+      if (!defer && entry.senses.length) { if (await translateSenses(entry.senses)) entry.quota = true; }
+    } catch (e) {
+      if (e && e.quota) entry.quota = true;
+    }
+    return entry;
+  }
+  var NET_ERR = '인터넷 연결이나 사전 서버 상태를 확인해 주세요. 잠시 뒤에 다시 시도하면 돼요.';
+  var QUOTA_MSG = '무료 번역 한도에 닿아서 한글 뜻을 못 가져왔어요. 직접 적거나 내일 다시 시도해 주세요. (아래 “번역 한도 늘리기”도 참고)';
+
+  /* ---------- 한 개 찾기 ---------- */
+  async function lookup() {
+    var w = S.q.trim();
+    if (!w || S.loading) return;
+    S.loading = true; S.found = null; S.foundKo = ''; S.foundEn = ''; S.msg = ''; S.note = '';
+    render();
+    try {
+      var isKo = HANGUL.test(w);
+      var e = isKo ? await buildKoEntry(w, true) : await buildEntry(w, true);
+      S.found = e; S.foundKo = e.ko || ''; S.foundEn = e.enm || '';
+      if (e.dictDown) S.note = '사전 서버 두 곳 모두 연결되지 않아 영영 뜻과 예문은 못 가져왔어요. 한글 뜻만 확인해서 저장하거나, 나중에 다시 찾아보세요.';
+      else if (e.source === 'wikt') S.note = 'Free Dictionary 대신 Wiktionary에서 가져왔어요. 발음기호는 없고, 🔊는 기기 음성으로 읽어줘요.';
+      else if (e.manual) S.note = '사전에 없는 단어예요. 한글 뜻을 직접 적어서 저장할 수 있어요.' + (e.ko ? ' (자동 번역을 넣어뒀으니 확인해 주세요)' : '');
+      if (e.oxFail && e.source !== 'oxford' && !e.dictDown) S.note = (S.note ? S.note + ' ' : '') + oxReason(e.oxFail);
+      if (e.exSource) S.note = (S.note ? S.note + ' ' : '') + '예문은 Tatoeba에서 가져왔어요. 위 뜻과 정확히 짝지어진 건 아니고 쓰임을 보여주는 예시예요.';
+      if (e.quota) S.msg = QUOTA_MSG;
+      var ex = S.words.find(function (x) { return x.id === wordId(e.word); });
+      if (ex) S.note = '이미 ' + fmtDate(ex.date) + '에 저장한 단어예요.';
+    } catch (err) {
+      S.msg = (err && err.krmsg) || (HANGUL.test(w) ? KR_ERR : NET_ERR);
+    }
+    S.loading = false;
+    render();
+  }
+  async function saveFound() {
+    var f = S.found;
+    if (!f || S.saving) return;
+    var ko = S.foundKo.trim();
+    if (f.manual && !ko) { S.msg = '사전에 없는 단어는 한글 뜻을 적어야 저장할 수 있어요.'; render(); return; }
+    var id = wordId(f.word);
+    if (S.words.some(function (x) { return x.id === id; })) { S.note = '이미 저장된 단어예요.'; render(); return; }
+    var quota = false;
+    if (f.deferred && f.senses.length) {
+      S.saving = true; S.msg = ''; S.note = '한글 풀이를 붙이는 중…'; render();
+      quota = await translateSenses(f.senses);
+      S.saving = false;
+    }
+    putWord({
+      id: id, word: f.word, lang: f.lang || 'en', ipa: f.ipa, audio: f.audio, ko: ko, enm: f.lang === 'ko' ? S.foundEn.trim() : '', senses: f.senses, manual: f.manual,
+      date: today(), createdAt: Date.now(), wrong: false, right: 0, miss: 0
+    }, true);
+    S.q = ''; S.found = null; S.foundKo = ''; S.foundEn = ''; S.msg = quota ? QUOTA_MSG : '';
+    S.note = '“' + f.word + '”를 오늘 날짜로 저장했어요.';
+    render();
+  }
+
+  /* ---------- 여러 개 한꺼번에 찾기 ---------- */
+  async function bulkLookup() {
+    var B = S.bulk;
+    if (B.loading) return;
+    var raw = S.bulkText.split(/[\n,;\t]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+    var seen = {}, list = [], skipped = 0;
+    raw.forEach(function (w) {
+      var k = w.toLowerCase();
+      if (seen[k]) return;
+      seen[k] = 1;
+      var id = wordId(w);
+      if (S.words.some(function (x) { return x.id === id; }) || B.results.some(function (r) { return r.id === id; })) { skipped++; return; }
+      list.push(w);
+    });
+    S.msg = ''; S.note = '';
+    if (!list.length) {
+      S.msg = raw.length ? '새로 찾을 단어가 없어요. 이미 저장했거나 같은 단어예요.' : '단어를 한 줄에 하나씩, 또는 쉼표로 구분해 넣어주세요.';
+      render(); return;
+    }
+    if (list.length > 20) { list = list.slice(0, 20); S.note = '무료 번역 한도 때문에 한 번에 20개까지만 찾아요.'; }
+    B.loading = true; B.bad = []; B.skipped = skipped;
+    var total = list.length;
+    B.prog = '0 / ' + total;
+    render();
+    var quotaHit = false;
+    for (var i = 0; i < list.length; i++) {
+      var w = list[i];
+      try {
+        var e = HANGUL.test(w) ? await buildKoEntry(w, false) : await buildEntry(w);
+        if (e.dictDown) {
+          B.bad = B.bad.concat(list.slice(i));
+          S.msg = '사전 서버가 응답하지 않아요. 잠시 뒤에 다시 시도해 주세요.';
+          break;
+        }
+        var id = wordId(e.word);
+        if (e.manual || B.results.some(function (r) { return r.id === id; }) || S.words.some(function (x) { return x.id === id; })) {
+          B.bad.push(w);
+        } else {
+          e.id = id; B.results.push(e);
+        }
+        if (e.quota) quotaHit = true;
+      } catch (err) {
+        B.bad.push(w);
+      }
+      B.prog = (i + 1) + ' / ' + total;
+      render();
+      await sleep(300);
+    }
+    B.loading = false;
+    if (quotaHit) S.msg = QUOTA_MSG;
+    render();
+  }
+  function bulkSaveAll() {
+    var B = S.bulk, n = 0;
+    B.results.forEach(function (e) {
+      if (S.words.some(function (x) { return x.id === e.id; })) return;
+      putWord({
+        id: e.id, word: e.word, lang: e.lang || 'en', ipa: e.ipa, audio: e.audio, ko: e.ko, enm: e.enm || '', senses: e.senses, manual: false,
+        date: today(), createdAt: Date.now() + n, wrong: false, right: 0, miss: 0
+      }, true);
+      n++;
+    });
+    var bad = B.bad.slice();
+    S.bulk = { loading: false, prog: '', results: [], bad: [], skipped: 0 };
+    S.bulkText = bad.join('\n');
+    S.note = n + '개를 오늘 날짜로 저장했어요.' + (bad.length ? ' 사전에서 못 찾은 ' + bad.length + '개는 입력칸에 남겼어요. “한 개씩”에서 뜻을 직접 적어 저장할 수 있어요.' : '');
+    render();
+  }
+
+  /* ---------- 화면 조각 ---------- */
+  function meaning(w) {
+    if (langOf(w) === 'ko') {
+      var d = w.ko || (w.senses && w.senses[0] && w.senses[0].koDef);
+      if (d) return d.length > 60 ? d.slice(0, 58) + '…' : d;
+    }
+    return w.ko || (w.senses && w.senses[0] && (w.senses[0].en || w.senses[0].koDef)) || '(뜻 없음)';
+  }
+  var POS_LONG = { '명': '명사', '동': '동사', '형': '형용사', '부': '부사', '전': '전치사', '접': '접속사', '대': '대명사', '감': '감탄사', '약': '약어', '수': '수사', '조': '조사', '관': '관형사', '의명': '의존 명사', '보동': '보조 동사', '보형': '보조 형용사' };
+  var LOOP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
+  function exCtl(text, lang) {
+    if (!canSpeak) return '';
+    return '<span class="pill"><button data-act="speak" data-t="' + esc(text) + '" data-a="" data-l="' + esc(lang || '') + '" aria-label="듣기">' + ICON + '</button>' +
+      '<button data-act="loop" data-t="' + esc(text) + '" data-l="' + esc(lang || '') + '" aria-label="반복 재생">' + LOOP_ICON + '</button></span>';
+  }
+  function entryHTML(w, edit) {
+    var isKo = langOf(w) === 'ko';
+    var h = '<div class="entry"><div class="hw"><span class="word">' + esc(w.word) + '</span>' +
+      (w.ipa ? '<span class="ipa">' + esc(w.ipa) + '</span>' : '') + spkBtn(w.word, false, w.audio, ttsLang(w)) + '</div>';
+    var groups = [], idx = {};
+    w.senses.forEach(function (s, si) {
+      var k = s.pos || '';
+      if (idx[k] == null) { idx[k] = groups.length; groups.push({ pos: k, items: [] }); }
+      groups[idx[k]].items.push({ s: s, si: si });
+    });
+    var n = 0;
+    groups.forEach(function (g) {
+      h += '<div class="posh">' + esc(POS_LONG[g.pos] || g.pos || '뜻') + '</div>';
+      g.items.forEach(function (it) {
+        n++;
+        var s = it.s;
+        var main = isKo ? (s.koDef || s.en) : (s.koDef || s.en);
+        var sub = isKo ? s.en : (s.koDef ? s.en : '');
+        h += '<div class="sn"><span class="no">' + n + '.</span><div class="sb">' +
+          (edit ? '<button class="btn small" data-act="sdrop" data-i="' + it.si + '" style="float:right;padding:4px 10px" aria-label="이 뜻 빼기">빼기</button>' : '') +
+          '<div class="smain">' + esc(main) + '</div>' +
+          (sub ? '<div class="sdef">' + esc(sub) + '</div>' : '') +
+          (s.ex ? '<div class="ex2"><div class="e">' + esc(s.ex) + '</div>' + exCtl(s.ex, ttsLang(w)) + (s.exKo ? '<div class="k">' + esc(s.exKo) + '</div>' : '') + '</div>' : '') +
+          '</div></div>';
+      });
+    });
+    if (isKo && w.enm) h += '<div class="posh">영어</div><div class="smain" style="font-weight:500">' + esc(w.enm) + '</div>';
+    return h + '</div>';
+  }
+
+  function viewAdd() {
+    var h = '<div class="modes"><button data-act="amode" data-m="one" aria-pressed="' + (S.addMode === 'one') + '">한 개씩</button>' +
+      '<button data-act="amode" data-m="bulk" aria-pressed="' + (S.addMode === 'bulk') + '">여러 개 한꺼번에</button></div>';
+    return h + (S.addMode === 'bulk' ? viewAddBulk() : viewAddOne());
+  }
+  var FOOT = '<p class="mute small" style="margin-top:16px">영영 뜻과 예문은 Free Dictionary API(안 되면 Wiktionary), 한글 뜻은 MyMemory 무료 번역을 써요. 기계 번역이라 어색할 수 있으니 한글 뜻은 직접 고칠 수 있어요. 회사 기밀이나 개인정보는 입력하지 마세요.</p>';
+
+  function viewAddOne() {
+    var h = '<div class="card"><h2>새 단어 찾기</h2><div class="row">' +
+      '<input type="text" id="q" value="' + esc(S.q) + '" placeholder="영어나 한글 단어 (예: invoice, 결재)" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="영어 또는 한글 단어">' +
+      '<button class="btn pri" data-act="lookup"' + (S.loading ? ' disabled' : '') + '>뜻 찾기</button></div>';
+    if (S.loading) h += '<div class="note">찾는 중<span class="dots"></span></div>';
+    if (S.msg) h += '<div class="msg" role="alert">' + esc(S.msg) + '</div>';
+    if (S.note && !S.found) h += '<div class="note">' + esc(S.note) + '</div>';
+    h += '</div>';
+    if (S.found) {
+      h += '<div class="card">' + entryHTML(S.found, true) +
+        '<div class="sense"><label class="small mute" for="foundKo">' + (S.found.lang === 'ko' ? '한국어 뜻' : '한글 뜻') + ' (고쳐도 돼요)</label>' +
+        '<input type="text" id="foundKo" value="' + esc(S.foundKo) + '" placeholder="예: 송장, 청구서" style="width:100%;margin-top:4px" autocomplete="off">' +
+        (S.found.lang === 'ko' ? '<label class="small mute" for="foundEn" style="display:block;margin-top:10px">영어 뜻 (고쳐도 돼요)</label>' +
+          '<input type="text" id="foundEn" value="' + esc(S.foundEn) + '" placeholder="예: normally" style="width:100%;margin-top:4px" autocomplete="off">' : '') + '</div>';
+      if (S.note) h += '<div class="note">' + esc(S.note) + '</div>';
+      h += '<div class="row" style="margin-top:16px"><button class="btn pri" data-act="save" style="flex:1">오늘 날짜로 저장</button>' +
+        '<button class="btn" data-act="discard">닫기</button></div></div>';
+    }
+    return h + FOOT;
+  }
+
+  function viewAddBulk() {
+    var B = S.bulk;
+    var h = '<div class="card"><h2>여러 단어 한꺼번에 찾기</h2>' +
+      '<textarea id="bulk" placeholder="한 줄에 하나씩, 또는 쉼표로 구분&#10;예:&#10;invoice&#10;headcount&#10;onboarding, budget" spellcheck="false" autocapitalize="none" aria-label="단어 목록">' + esc(S.bulkText) + '</textarea>' +
+      '<p class="mute small" style="margin:6px 0 0">엑셀에서 열을 복사해서 붙여넣어도 돼요. 무료 번역 한도 때문에 한 번에 20개까지 찾아요.</p>' +
+      '<button class="btn pri block" style="margin-top:12px" data-act="bulkgo"' + (B.loading ? ' disabled' : '') + '>한꺼번에 뜻 찾기</button>';
+    if (B.loading) h += '<div class="note">찾는 중 ' + esc(B.prog) + '<span class="dots"></span></div>';
+    if (S.msg) h += '<div class="msg" role="alert">' + esc(S.msg) + '</div>';
+    if (S.note && !B.results.length) h += '<div class="note">' + esc(S.note) + '</div>';
+    h += '</div>';
+    if (B.results.length) {
+      h += '<div class="card"><h2>찾은 단어 ' + B.results.length + '개</h2>';
+      if (B.skipped) h += '<p class="mute small" style="margin:0">이미 저장했거나 중복인 ' + B.skipped + '개는 뺐어요.</p>';
+      if (B.bad.length) h += '<div class="msg">사전에서 못 찾은 단어: ' + esc(B.bad.join(', ')) + '</div>';
+      B.results.forEach(function (w, i) {
+        h += '<div class="brow"><div class="bi"><div class="row"><span class="bw">' + esc(w.word) + '</span>' +
+          (w.ipa ? '<span class="mute small">' + esc(w.ipa) + '</span>' : '') + spkBtn(w.word, true, w.audio, ttsLang(w)) + '</div>' +
+          '<div class="ko" style="font-size:15px">' + esc(meaning(w)) + '</div>' +
+          '<div class="mute small">' + esc((w.senses[0] && w.senses[0].en) || '') + '</div></div>' +
+          '<button class="btn small" data-act="bdrop" data-i="' + i + '" aria-label="' + esc(w.word) + ' 빼기">빼기</button></div>';
+      });
+      h += '<button class="btn pri block" style="margin-top:14px" data-act="bulksave"' + (B.loading ? ' disabled' : '') + '>' + B.results.length + '개 오늘 날짜로 저장</button></div>';
+    } else if (!B.loading && B.bad.length) {
+      h += '<div class="card"><div class="msg" style="margin-top:0">사전에서 못 찾은 단어: ' + esc(B.bad.join(', ')) + '</div></div>';
+    }
+    return h + FOOT;
+  }
+
+  function viewList() {
+    var h = '';
+    if (!S.words.length) {
+      h += '<div class="empty">아직 저장한 단어가 없어요.<br>“추가”에서 첫 단어를 넣어보세요.</div>';
+    } else {
+      var groups = {};
+      S.words.forEach(function (w) { (groups[w.date] = groups[w.date] || []).push(w); });
+      Object.keys(groups).sort().reverse().forEach(function (d) {
+        var arr = groups[d].sort(function (a, b) { return b.createdAt - a.createdAt; });
+        h += '<section class="group"><h3><span>' + esc(fmtDate(d)) + '</span><span>' + arr.length + '개</span></h3>';
+        arr.forEach(function (w) {
+          var open = !!S.open[w.id];
+          var armed = S.delArm === w.id;
+          h += '<div class="item"><div class="top"><button class="head" data-act="toggle" data-id="' + esc(w.id) + '" aria-expanded="' + open + '">' +
+            '<span class="iw">' + esc(w.word) + '</span><span class="im">' + esc(meaning(w)) + '</span>' +
+            (w.wrong ? '<span class="badge">오답</span>' : '') + '</button>' +
+            '<button class="x' + (armed ? ' armed' : '') + '" data-act="del" data-id="' + esc(w.id) + '" aria-label="' + esc(w.word) + ' 삭제">' + (armed ? '삭제?' : '×') + '</button></div>';
+          if (open) {
+            if (S.edit && S.edit.id === w.id) {
+              h += '<div class="detail">' + editHTML() + '</div>';
+            } else {
+              h += '<div class="detail">' + entryHTML(w) +
+                '<div class="row" style="margin-top:14px;justify-content:space-between"><span class="mute small">맞힘 ' + (w.right || 0) + ' · 틀림 ' + (w.miss || 0) + '</span>' +
+                '<div class="row"><button class="btn small" data-act="edit" data-id="' + esc(w.id) + '">수정</button>' +
+                '<button class="btn small' + (S.delArm === w.id ? ' danger' : '') + '" data-act="del" data-id="' + esc(w.id) + '">' +
+                (S.delArm === w.id ? '한 번 더 누르면 삭제' : '삭제') + '</button></div></div></div>';
+            }
+          }
+          h += '</div>';
+        });
+        h += '</section>';
+      });
+    }
+    h += '<div class="card" style="margin-top:28px"><h2>백업과 설정</h2>' +
+      '<p class="mute small" style="margin:0 0 10px">단어는 이 기기의 브라우저에 저장돼요. 폰과 컴퓨터가 서로 따로예요. 파일로 내보내서 다른 기기에서 가져오면 옮길 수 있어요.</p>' +
+      '<div class="row wrap-r"><button class="btn" data-act="export">단어장 내보내기</button>' +
+      '<label class="btn" for="imp" style="cursor:pointer">가져오기</label>' +
+      '<input type="file" id="imp" accept="application/json,.json" style="position:absolute;left:-9999px;opacity:0"></div>' +
+      '<div class="sense"><label class="small mute" for="mail">번역 한도 늘리기 (선택): 이메일 입력</label>' +
+      '<div class="row" style="margin-top:4px"><input type="text" id="mail" value="' + esc(S.email) + '" placeholder="me@example.com" autocomplete="off" autocapitalize="none">' +
+      '<button class="btn" data-act="mailsave">저장</button></div>' +
+      '<p class="mute small" style="margin:6px 0 0">MyMemory는 이메일을 함께 보내면 하루 번역 한도가 늘어나는 걸로 알고 있어요. 정확한 한도는 MyMemory 안내에서 확인해 보세요.</p></div>' +
+      '<div class="sense"><label class="small mute" for="kr-key">한국어기초사전 인증키</label>' +
+      '<div class="row" style="margin-top:4px"><input type="text" id="kr-key" value="' + esc(S.krKey) + '" placeholder="발급받은 인증키" autocomplete="off" autocapitalize="none" spellcheck="false">' +
+      '<button class="btn" data-act="krsave">저장</button></div>' +
+      '<label class="small mute" for="kr-base" style="display:block;margin-top:10px">중계 주소 (선택, 보통 비워두세요)</label>' +
+      '<input type="text" id="kr-base" value="' + esc(S.krBase) + '" placeholder="연결이 막힐 때만 입력" style="width:100%;margin-top:4px" autocomplete="off" autocapitalize="none" spellcheck="false">' +
+      '<p class="mute small" style="margin:6px 0 0">기본 인증키가 앱 파일에 들어 있어서 따로 입력하지 않아도 돼요. 다른 키를 쓰려면 여기에 입력하세요.</p></div>' +
+      '<div class="sense"><label class="small mute" for="ox-id">Oxford 앱 ID</label>' +
+      '<input type="text" id="ox-id" value="' + esc(S.oxId) + '" style="width:100%;margin-top:4px" autocomplete="off" autocapitalize="none" spellcheck="false">' +
+      '<label class="small mute" for="ox-key" style="display:block;margin-top:10px">Oxford 앱 키</label>' +
+      '<input type="text" id="ox-key" value="' + esc(S.oxKey) + '" style="width:100%;margin-top:4px" autocomplete="off" autocapitalize="none" spellcheck="false">' +
+      '<label class="small mute" for="ox-base" style="display:block;margin-top:10px">Oxford 주소 (비우면 샌드박스 주소)</label>' +
+      '<input type="text" id="ox-base" value="' + esc(S.oxBase) + '" placeholder="' + esc(OX_BASE_DEFAULT) + '" style="width:100%;margin-top:4px" autocomplete="off" autocapitalize="none" spellcheck="false">' +
+      '<div style="margin-top:10px"><button class="btn" data-act="oxsave">Oxford 설정 저장</button></div>' +
+      '<p class="mute small" style="margin:6px 0 0">샌드박스 키는 a로 시작하는 단어만, 총 500번까지 쓸 수 있어요. 안 되는 단어는 자동으로 다른 무료 사전으로 넘어가요. 유료 키는 이 파일에 적지 말고 여기에만 입력하세요.</p></div></div>';
+    if (!S.storageOK) h += '<div class="msg">이 브라우저에서는 저장이 막혀 있어요. 시크릿 모드라면 일반 창에서 열어주세요.</div>';
+    return h;
+  }
+
+  /* ---------- 퀴즈 ---------- */
+  function pool() {
+    var Q = S.quiz;
+    var sel = Object.keys(Q.dates).filter(function (d) { return Q.dates[d]; });
+    return S.words.filter(function (w) {
+      if (Q.onlyWrong && !w.wrong) return false;
+      if (sel.length) return sel.indexOf(w.date) >= 0;
+      return Q.onlyWrong;
+    });
+  }
+  function viewQuizSetup() {
+    if (!S.words.length) return '<div class="hero"><div class="hero-t">은하 훈련소</div></div><div class="empty">출격하려면 단어가 필요해요.<br>“추가”에서 단어를 저장해 주세요.</div>';
+    var Q = S.quiz;
+    var counts = {};
+    S.words.forEach(function (w) { counts[w.date] = (counts[w.date] || 0) + 1; });
+    var dates = Object.keys(counts).sort().reverse();
+    var wrongN = S.words.filter(function (w) { return w.wrong; }).length;
+    var n = pool().length;
+    var mcOK = S.words.length >= 4;
+    if (!mcOK && Q.mode === 'mc') Q.mode = 'type';
+    var h = '<div class="hero"><div class="herobot">' + robotSVG('idle') + '</div><div class="hero-t">은하 훈련소</div><div class="hero-s">오늘의 출격 준비를 마치세요</div></div>' +
+      '<div class="hud" style="justify-content:center;margin-top:10px"><span class="hi">단어<b>' + S.words.length + '</b></span><span class="hi">오답<b>' + wrongN + '</b></span>' +
+      '<button class="btn small" data-act="snd">효과음 ' + (soundOn ? '켜짐' : '꺼짐') + '</button></div>';
+    h += '<div class="card"><h2>작전 선택</h2><div class="chips">';
+    dates.forEach(function (d) {
+      h += '<button class="chip" data-act="qdate" data-d="' + esc(d) + '" aria-pressed="' + !!Q.dates[d] + '">' +
+        esc(fmtDate(d).replace(/ \(.\)/, '')) + ' · ' + counts[d] + '</button>';
+    });
+    h += '</div><div class="row" style="margin-top:8px"><button class="btn small" data-act="qall">전체 선택</button>' +
+      '<button class="btn small" data-act="qnone">선택 해제</button></div></div>';
+    h += '<div class="card"><h2>재도전 작전</h2><div class="chips"><button class="chip" data-act="qwrong" aria-pressed="' + Q.onlyWrong + '"' + (wrongN ? '' : ' disabled') + '>틀린 단어만 (' + wrongN + ')</button></div>' +
+      '<p class="mute small" style="margin:6px 0 0">날짜를 고르면 그 날짜의 틀린 단어만, 날짜 없이 켜면 모든 오답을 풀어요.</p></div>';
+    h += '<div class="card"><h2>전투 모드</h2><div class="seg">' +
+      '<button data-act="qmode" data-m="mc" aria-pressed="' + (Q.mode === 'mc') + '"' + (mcOK ? '' : ' disabled') + '><b>레이더 조준 · 객관식</b><span>단어를 보고 알맞은 뜻을 골라요' + (mcOK ? '' : ' (단어 4개 이상)') + '</span></button>' +
+      '<button data-act="qmode" data-m="type" aria-pressed="' + (Q.mode === 'type') + '"><b>암호 해독 · 주관식</b><span>뜻을 보고 단어를 써요. 오타나 비슷한 말(영어)도 인정해요</span></button>' +
+      '<button data-act="qmode" data-m="typem" aria-pressed="' + (Q.mode === 'typem') + '"><b>교신 번역 · 주관식</b><span>단어를 보고 뜻을 써요. 의미나 글자가 비슷하면 인정해요</span></button></div></div>';
+    h += '<button class="btn pri block launch" data-act="qstart"' + (n && !S.warp ? '' : ' disabled') + '>' +
+      (n ? '출격 · ' + n + '문제' : '작전을 선택하세요') + '</button>';
+    return h;
+  }
+
+  function startRun(words, round) {
+    var run = { items: shuffle(words), i: 0, mode: S.quiz.mode, round: round || 1, answered: null, hint: false, rightIds: [], wrongIds: [], done: false, q: null,
+      score: 0, streak: 0, best: 0, lastPoints: 0 };
+    S.quiz.run = run;
+    buildQ(run);
+    render();
+  }
+  function buildQ(run) {
+    var w = run.items[run.i];
+    run.answered = null; run.hint = false; run.q = null; run.typed = ''; run.judging = false;
+    if (run.mode === 'mc') {
+      var correct = meaning(w);
+      var seen = {}; seen[correct] = 1;
+      var d = [];
+      shuffle(S.words.filter(function (x) { return x.id !== w.id && langOf(x) === langOf(w); })).concat(shuffle(S.words.filter(function (x) { return x.id !== w.id && langOf(x) !== langOf(w); }))).forEach(function (x) {
+        var m = meaning(x);
+        if (d.length < 3 && !seen[m]) { seen[m] = 1; d.push(m); }
+      });
+      var opts = shuffle([correct].concat(d));
+      run.q = { opts: opts, correct: opts.indexOf(correct) };
+    }
+  }
+  function record(w, ok) {
+    var nw = JSON.parse(JSON.stringify(w));
+    if (ok) { nw.right = (nw.right || 0) + 1; nw.wrong = false; }
+    else { nw.miss = (nw.miss || 0) + 1; nw.wrong = true; }
+    putWord(nw, true);
+    var run = S.quiz.run;
+    run.items[run.i] = nw;
+    (ok ? run.rightIds : run.wrongIds).push(nw.id);
+    if (ok) {
+      run.streak++;
+      if (run.streak > run.best) run.best = run.streak;
+      run.lastPoints = 100 + Math.min(run.streak - 1, 5) * 20;
+      run.score += run.lastPoints;
+      beep('ok');
+    } else {
+      run.streak = 0; run.lastPoints = 0;
+      beep('bad');
+    }
+  }
+  /* ---------- 효과음 (기기에서 직접 만드는 짧은 소리) ---------- */
+  function robotSVG(mood) {
+    var eyes, mouth;
+    if (mood === 'happy') {
+      eyes = '<path d="M19 33q4-7 8 0M37 33q4-7 8 0" fill="none" stroke="#4FD1FF" stroke-width="2.8" stroke-linecap="round"/>';
+      mouth = '<path d="M26 39q6 5 12 0" fill="none" stroke="#4FD1FF" stroke-width="2.2" stroke-linecap="round"/>';
+    } else if (mood === 'sad') {
+      eyes = '<circle cx="24" cy="33" r="3" fill="#4FD1FF"/><circle cx="40" cy="33" r="3" fill="#4FD1FF"/><path d="M18 27l9 3M46 27l-9 3" stroke="#4FD1FF" stroke-width="2.2" stroke-linecap="round"/>';
+      mouth = '<path d="M27 41q5-4 10 0" fill="none" stroke="#4FD1FF" stroke-width="2.2" stroke-linecap="round"/>';
+    } else {
+      eyes = '<circle cx="24" cy="32" r="3.6" fill="#4FD1FF"/><circle cx="40" cy="32" r="3.6" fill="#4FD1FF"/>';
+      mouth = '<path d="M28 39h8" stroke="#4FD1FF" stroke-width="2.2" stroke-linecap="round"/>';
+    }
+    return '<svg viewBox="0 0 64 64" role="img" aria-label="로봇 친구">' +
+      '<line x1="32" y1="14" x2="32" y2="6" stroke="#8fb0ff" stroke-width="2.5"/><circle cx="32" cy="5" r="3.2" fill="#FF7A66"/>' +
+      '<rect x="8" y="14" width="48" height="34" rx="12" fill="#d7e8ff" stroke="#8fb0ff" stroke-width="2"/>' +
+      '<rect x="14" y="21" width="36" height="22" rx="9" fill="#08142e"/>' + eyes + mouth +
+      '<circle cx="6" cy="31" r="3" fill="#8fb0ff"/><circle cx="58" cy="31" r="3" fill="#8fb0ff"/>' +
+      '<rect x="20" y="50" width="24" height="10" rx="4" fill="#9db8e8"/></svg>';
+  }
+  var SHIP_SVG = '<svg viewBox="-8 0 128 56" role="img" aria-label="우주선">' +
+    '<path class="flame" d="M14 28 L-6 21 L-6 35 Z" fill="#7FE3FF" opacity=".9"/>' +
+    '<path d="M14 28 L48 14 L104 24 Q116 28 104 32 L48 42 Z" fill="#cfe0ff" stroke="#6b86c9" stroke-width="1.5"/>' +
+    '<path d="M44 14 L62 2 L74 4 L62 20 Z" fill="#8fb0ff"/><path d="M44 42 L62 54 L74 52 L62 36 Z" fill="#8fb0ff"/>' +
+    '<ellipse cx="84" cy="27" rx="12" ry="5" fill="#4FD1FF" opacity=".9"/><circle cx="30" cy="28" r="3" fill="#FF7A66"/></svg>';
+  var soundOn = true;
+  try { soundOn = localStorage.getItem('companyWords:snd') !== 'off'; } catch (e) {}
+  var audioCtx = null;
+  function beep(kind) {
+    if (!soundOn) return;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      audioCtx = audioCtx || new AC();
+      var ctx = audioCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      var seq = kind === 'ok' ? [[660, 0, 0.09], [990, 0.09, 0.14]]
+        : kind === 'win' ? [[523, 0, 0.1], [659, 0.1, 0.1], [784, 0.2, 0.1], [1047, 0.3, 0.28]]
+        : [[170, 0, 0.24]];
+      seq.forEach(function (n) {
+        var o = ctx.createOscillator(), g = ctx.createGain(), t0 = ctx.currentTime + n[1];
+        o.type = kind === 'bad' ? 'sawtooth' : 'square';
+        o.frequency.value = n[0];
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.05, t0 + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + n[2]);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0); o.stop(t0 + n[2] + 0.03);
+      });
+    } catch (e) { /* 소리가 안 나도 퀴즈는 계속 */ }
+  }
+  function answerMC(idx) {
+    var run = S.quiz.run;
+    if (run.answered) return;
+    var ok = idx === run.q.correct;
+    run.answered = { ok: ok, pick: idx };
+    record(run.items[run.i], ok);
+    render();
+  }
+  /* ---------- 주관식 채점: 오타, 활용형, 비슷한 뜻도 인정 ---------- */
+  function lev(a, b) {
+    var m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    var prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+      }
+      prev = cur.slice();
+    }
+    return prev[n];
+  }
+  function stem(s) { return s.length > 4 ? s.replace(/(ing|ed|es|s)$/, '') : s; }
+  function normText(s) { return String(s || '').toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^a-z0-9가-힣]+/g, ''); }
+  function bigrams(s) {
+    var o = {};
+    for (var i = 0; i < s.length - 1; i++) o[s.substr(i, 2)] = 1;
+    return Object.keys(o);
+  }
+  function answerKeys(w) {
+    var keys = [];
+    String(w.ko || '').split(/[\/,;]/).forEach(function (x) { x = x.trim(); if (x) keys.push(x); });
+    String(w.enm || '').split(/[\/,;]/).forEach(function (x) { x = x.trim(); if (x) keys.push(x); });
+    (w.senses || []).forEach(function (s) { if (s.koDef) keys.push(s.koDef); });
+    return keys;
+  }
+  function judgeMeaning(typed, w) {
+    var t = normText(typed);
+    if (!t) return { ok: false };
+    var best = 0;
+    var keys = answerKeys(w);
+    for (var i = 0; i < keys.length; i++) {
+      var n = normText(keys[i]);
+      if (!n) continue;
+      if (t === n) return { ok: true, kind: 'exact' };
+      var shortS = t.length < n.length ? t : n, longS = t.length < n.length ? n : t;
+      if (shortS.length >= 2 && longS.indexOf(shortS) >= 0 && (longS.length <= 12 || shortS.length >= 3)) return { ok: true, kind: 'similar' };
+      if (Math.max(t.length, n.length) >= 4 && lev(t, n) <= (Math.max(t.length, n.length) >= 8 ? 2 : 1)) return { ok: true, kind: 'similar' };
+      var A = bigrams(t), B = bigrams(n);
+      if (A.length && B.length) {
+        var c = 0;
+        A.forEach(function (x) { if (B.indexOf(x) >= 0) c++; });
+        var score = c / Math.min(A.length, B.length);
+        if (score > best) best = score;
+      }
+    }
+    return { ok: best >= 0.6, kind: 'similar' };
+  }
+  var synCache = {};
+  async function synonyms(word) {
+    if (synCache[word]) return synCache[word];
+    var out = [];
+    try {
+      var urls = ['https://api.datamuse.com/words?rel_syn=' + encodeURIComponent(word) + '&max=30',
+        'https://api.datamuse.com/words?ml=' + encodeURIComponent(word) + '&max=15'];
+      var rs = await Promise.all(urls.map(function (u) { return fetchJson(u, 5000).catch(function () { return null; }); }));
+      rs.forEach(function (r) {
+        if (r && Array.isArray(r.data)) r.data.forEach(function (x) { if (x && x.word) out.push(String(x.word).toLowerCase()); });
+      });
+    } catch (e) { /* 비슷한 말을 못 가져오면 철자 비교만 한다 */ }
+    synCache[word] = out;
+    return out;
+  }
+  async function judgeWord(typed, w) {
+    var t = typed.trim().toLowerCase(), a = String(w.word).trim().toLowerCase();
+    if (t === a) return { ok: true, kind: 'exact' };
+    var ko = langOf(w) === 'ko';
+    var L = Math.max(t.length, a.length);
+    var tol = ko ? (L >= 4 ? 1 : 0) : (L >= 9 ? 2 : (L >= 5 ? 1 : 0));
+    if (tol && lev(t, a) <= tol) return { ok: true, kind: 'close' };
+    if (!ko && stem(t) === stem(a)) return { ok: true, kind: 'close' };
+    if (!ko) {
+      var syn = await synonyms(a);
+      if (syn.indexOf(t) >= 0) return { ok: true, kind: 'synonym' };
+    }
+    return { ok: false };
+  }
+  async function answerType() {
+    var run = S.quiz.run;
+    if (!run || run.answered || run.judging) return;
+    var el = $('#ans');
+    var raw = el ? el.value.trim() : '';
+    if (!raw) return;
+    var w = run.items[run.i];
+    run.typed = raw;
+    var res;
+    if (run.mode === 'typem') {
+      res = judgeMeaning(raw, w);
+    } else {
+      run.judging = true; render();
+      res = await judgeWord(raw, w);
+      run.judging = false;
+    }
+    if (S.quiz.run !== run || run.answered) return;
+    run.answered = { ok: res.ok, text: raw, kind: res.kind || '' };
+    record(w, res.ok);
+    render();
+  }
+  function verdictText(run, w, a) {
+    if (run.mode === 'mc') return a.ok ? '정답이에요' : '아쉬워요. 초록색이 정답이에요';
+    if (a.ok) {
+      if (a.kind === 'exact') return '정답이에요';
+      if (a.kind === 'synonym') return '비슷한 뜻이라 정답으로 인정할게요. 정확한 단어는 ' + esc(w.word);
+      return run.mode === 'typem' ? '의미가 비슷해서 정답으로 인정할게요' : '거의 맞아서 정답으로 인정할게요. 정확한 철자는 ' + esc(w.word);
+    }
+    return run.mode === 'typem' ? '아쉬워요. 이 단어의 뜻은 ' + esc(meaning(w)) : '아쉬워요. 정답은 ' + esc(w.word);
+  }
+  function nextQ() {
+    var run = S.quiz.run;
+    if (run.i + 1 >= run.items.length) { run.done = true; if (run.rightIds.length / run.items.length >= 0.6) beep('win'); render(); return; }
+    run.i++;
+    buildQ(run);
+    render();
+  }
+  function viewQuizRun() {
+    var run = S.quiz.run;
+    if (run.done) return viewResult();
+    var w = run.items[run.i];
+    var total = run.items.length;
+    var pct = Math.round((run.i + (run.answered ? 1 : 0)) / total * 100);
+    var mood = run.answered ? (run.answered.ok ? 'happy' : 'sad') : 'idle';
+    var h = '<div class="card"><div class="hud"><span class="bot ' + (mood === 'idle' ? '' : mood) + '">' + robotSVG(mood) + '</span><span class="hi">' + (run.round > 1 ? '재출격 ' + run.round + ' · ' : '구역') + '<b>' + (run.i + 1) + '</b>/' + total + '</span>' +
+      '<span class="hi score">점수<b>' + run.score.toLocaleString() + '</b></span>' +
+      (run.streak >= 2 ? '<span class="hi combo">연속<b>×' + run.streak + '</b></span>' : '') +
+      '<span class="sp"></span><button class="btn small" data-act="qquit">복귀</button></div>' +
+      '<div class="prog"><i style="width:' + pct + '%"></i></div>';
+    if (run.mode === 'mc') {
+      h += '<div class="cap">이 단어의 뜻은?</div><div class="row"><p class="q-word" style="margin:0">' + esc(w.word) + '</p>' + spkBtn(w.word, false, w.audio, ttsLang(w)) + '</div>' +
+        (w.ipa ? '<div class="mute">' + esc(w.ipa) + '</div>' : '') + '<div class="opts">';
+      run.q.opts.forEach(function (o, i) {
+        var cls = 'opt';
+        if (run.answered) {
+          if (i === run.q.correct) cls += ' right';
+          else if (i === run.answered.pick) cls += ' wrong';
+        }
+        h += '<button class="' + cls + '" data-act="pick" data-i="' + i + '"' + (run.answered ? ' disabled' : '') + '>' + esc(o) + '</button>';
+      });
+      h += '</div>';
+    } else {
+      var firstKey = answerKeys(w)[0] || '';
+      if (run.mode === 'typem') {
+        h += '<div class="cap">이 단어의 뜻을 입력하세요</div><div class="row"><p class="q-word" style="margin:0">' + esc(w.word) + '</p>' + spkBtn(w.word, false, w.audio, ttsLang(w)) + '</div>' +
+          (w.ipa ? '<div class="mute">' + esc(w.ipa) + '</div>' : '');
+        if (run.hint && !run.answered && firstKey) h += '<p class="small" style="margin:10px 0 0">힌트: 뜻은 <b>' + esc(firstKey.charAt(0)) + '</b>(으)로 시작해요</p>';
+      } else {
+        h += '<div class="cap">이 뜻의 단어는?</div><p class="q-ko">' + esc(meaning(w)) + '</p>' +
+          (w.senses[0] && w.senses[0].en ? '<p class="en mute" style="margin:0">' + esc(w.senses[0].en) + '</p>' : '');
+        if (run.hint && !run.answered) {
+          h += '<p class="small" style="margin:10px 0 0">힌트: <b>' + esc(w.word.charAt(0)) + '</b>' + ' _'.repeat(Math.max(w.word.length - 1, 0)) + ' (' + w.word.length + '글자)</p>';
+        }
+      }
+      if (!run.answered) {
+        h += '<div class="row" style="margin-top:14px"><input type="text" id="ans" value="' + esc(run.typed || '') + '"' + (run.judging ? ' disabled' : '') +
+          ' placeholder="' + (run.mode === 'typem' ? '뜻을 입력' : (langOf(w) === 'ko' ? '한글 단어를 입력' : '영어 단어를 입력')) + '" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="정답 입력">' +
+          '<button class="btn pri" data-act="submit"' + (run.judging ? ' disabled' : '') + '>' + (run.judging ? '채점 중…' : '발사') + '</button></div>' +
+          '<div style="margin-top:8px"><button class="btn small" data-act="hint">힌트 보기</button></div>';
+      }
+    }
+    if (run.answered) {
+      var a = run.answered;
+      h += '<div class="verdict ' + (a.ok ? 'ok' : 'no') + '">' + (a.ok ? '명중 · ' : '빗나감 · ') + verdictText(run, w, a) +
+        (a.ok ? '<span class="pts">+' + run.lastPoints + '</span>' : '') +
+        (run.mode !== 'mc' && a.text && a.kind !== 'exact' ? ' <span class="small" style="font-weight:400">(내 답: ' + esc(a.text) + ')</span>' : '') + '</div>' +
+        '<div style="margin-top:12px">' + entryHTML(w) + '</div>' +
+        '<button class="btn pri block" style="margin-top:16px" data-act="next">' + (run.i + 1 >= total ? '작전 결과 보기' : '다음 구역으로') + '</button>';
+    }
+    return h + '</div>';
+  }
+  function viewResult() {
+    var run = S.quiz.run;
+    function find(id) { return S.words.find(function (x) { return x.id === id; }); }
+    var wrongWords = run.wrongIds.map(find).filter(Boolean);
+    var rightWords = run.rightIds.map(find).filter(Boolean);
+    function li(w) { return '<li><b>' + esc(w.word) + '</b><span>' + esc(meaning(w)) + '</span></li>'; }
+    var total = run.items.length;
+    var acc = total ? Math.round(rightWords.length / total * 100) : 0;
+    var rk = acc >= 90 ? ['은하 제독', '완벽에 가까운 작전이었어요'] : acc >= 70 ? ['함대 사령관', '훌륭해요. 거의 다 맞혔어요'] : acc >= 50 ? ['정예 파일럿', '절반 이상 명중. 조금만 더 다듬어요'] : ['신입 생도', '훈련은 이제 시작이에요. 재출격해 봐요'];
+    var h = '<div class="card"><div class="rank"><div class="rs">' + (run.round > 1 ? '재출격 ' + run.round + ' 결과' : '작전 결과') + '</div>' +
+      '<div class="rt">' + rk[0] + '</div><div class="rs">' + rk[1] + '</div>' +
+      '<div class="big">' + run.score.toLocaleString() + '</div><div class="rs">획득 점수</div></div>' +
+      '<div class="stats"><div><b>' + rightWords.length + '</b>명중</div><div><b>' + wrongWords.length + '</b>빗나감</div><div><b>' + acc + '%</b>명중률</div><div><b>×' + run.best + '</b>최고 연속</div></div>';
+    if (wrongWords.length) h += '<h2 style="margin-top:18px">빗나간 단어</h2><ul class="rl">' + wrongWords.map(li).join('') + '</ul>';
+    else h += '<div class="note" style="margin-top:14px">전부 명중했어요. 오답 노트에서도 모두 빠졌어요.</div>';
+    if (rightWords.length) h += '<h2 style="margin-top:18px">명중한 단어</h2><ul class="rl">' + rightWords.map(li).join('') + '</ul>';
+    h += '<div style="margin-top:18px;display:grid;gap:8px">' +
+      (wrongWords.length ? '<button class="btn pri block" data-act="retry">빗나간 ' + wrongWords.length + '개 재출격</button>' : '') +
+      '<button class="btn block" data-act="qquit">기지로 복귀</button></div></div>';
+    return h;
+  }
+
+  /* ---------- 전체 그리기 ---------- */
+  function render() {
+    var body;
+    if (S.tab === 'add') body = viewAdd();
+    else if (S.tab === 'list') body = viewList();
+    else body = S.quiz.run ? viewQuizRun() : viewQuizSetup();
+    document.body.classList.toggle('space', S.tab === 'quiz');
+    $('#app').innerHTML = '<header><h1>회사 단어장</h1><p>이 기기에 저장 중 · 무료 사전 API 사용</p></header>' + body +
+      (S.msg && S.tab === 'list' ? '<div class="msg" role="alert">' + esc(S.msg) + '</div>' : '') +
+      (S.warp ? '<div class="warp" aria-hidden="true"></div>' : '');
+    var tabs = [['add', '추가'], ['list', '단어장 ' + S.words.length], ['quiz', '퀴즈']];
+    $('#tabs').innerHTML = tabs.map(function (t) {
+      return '<button data-act="tab" data-t="' + t[0] + '"' + (S.tab === t[0] ? ' aria-current="page"' : '') + '>' + esc(t[1]) + '</button>';
+    }).join('');
+    if (S.tab === 'quiz' && S.quiz.run && !S.quiz.run.done && S.quiz.run.mode !== 'mc' && !S.quiz.run.answered) {
+      setTimeout(function () { var el = $('#ans'); if (el) el.focus(); }, 30);
+    }
+  }
+
+  /* ---------- 저장한 단어 수정 ---------- */
+  function fld(label, id, val, ph) {
+    return '<label class="small mute" for="' + id + '">' + label + '</label>' +
+      '<input type="text" id="' + id + '" value="' + esc(val) + '" placeholder="' + esc(ph || '') + '" autocomplete="off" autocapitalize="none" spellcheck="false">';
+  }
+  function editHTML() {
+    var d = S.edit.draft;
+    var h = '<div class="edit">' + fld('단어', 'ed-word', d.word) + fld(S.edit.lang === 'ko' ? '한국어 뜻 (퀴즈에 나오는 뜻)' : '퀴즈에 나오는 뜻', 'ed-ko', d.ko, '예: 송장 / 청구서') +
+      (S.edit.lang === 'ko' ? fld('영어 뜻', 'ed-enm', d.enm, '예: normally') : '');
+    d.senses.forEach(function (s, i) {
+      h += '<div class="sense"><div class="row" style="justify-content:space-between"><b class="small">뜻 ' + (i + 1) + '</b>' +
+        '<button class="btn small" data-act="edsdrop" data-i="' + i + '">이 뜻 빼기</button></div>' +
+        fld('품사 (명, 동, 형…)', 'ed-pos-' + i, s.pos) + fld('한글 풀이', 'ed-kd-' + i, s.koDef) +
+        fld('영어 뜻', 'ed-en-' + i, s.en) + fld('예문', 'ed-ex-' + i, s.ex) + fld('예문 한글 번역', 'ed-exko-' + i, s.exKo) + '</div>';
+    });
+    return h + '<div style="margin-top:12px"><button class="btn small" data-act="edsadd">+ 뜻 추가</button></div>' +
+      '<div class="row" style="margin-top:16px"><button class="btn pri" data-act="edsave" style="flex:1">수정 저장</button>' +
+      '<button class="btn" data-act="edcancel">취소</button></div></div>';
+  }
+  function startEdit(id) {
+    var w = S.words.find(function (x) { return x.id === id; });
+    if (!w) return;
+    S.edit = { id: id, lang: langOf(w), draft: { word: w.word, ko: w.ko || '', enm: w.enm || '', senses: JSON.parse(JSON.stringify(w.senses || [])) } };
+    S.delArm = null; S.msg = '';
+    render();
+  }
+  function collectEdit() {
+    var E = S.edit;
+    if (!E) return;
+    function v(id) { var el = document.getElementById(id); return el ? el.value : null; }
+    var wd = v('ed-word'); if (wd !== null) E.draft.word = wd;
+    var ko = v('ed-ko'); if (ko !== null) E.draft.ko = ko;
+    var enm = v('ed-enm'); if (enm !== null) E.draft.enm = enm;
+    var map = { pos: 'ed-pos-', koDef: 'ed-kd-', en: 'ed-en-', ex: 'ed-ex-', exKo: 'ed-exko-' };
+    E.draft.senses.forEach(function (s, i) {
+      Object.keys(map).forEach(function (k) { var x = v(map[k] + i); if (x !== null) s[k] = x; });
+    });
+  }
+  function saveEdit() {
+    collectEdit();
+    var E = S.edit;
+    if (!E) return;
+    var w0 = S.words.find(function (x) { return x.id === E.id; });
+    if (!w0) { S.edit = null; render(); return; }
+    var word = E.draft.word.trim();
+    if (!word) { S.msg = '단어는 비워둘 수 없어요.'; render(); return; }
+    var nid = wordId(word);
+    if (S.words.some(function (x) { return x.id !== E.id && x.id === nid; })) { S.msg = '같은 단어가 이미 단어장에 있어요.'; render(); return; }
+    var nw = JSON.parse(JSON.stringify(w0));
+    if (word.toLowerCase() !== String(w0.word).toLowerCase()) { nw.audio = ''; nw.ipa = ''; }
+    nw.word = word;
+    nw.ko = E.draft.ko.trim();
+    if (E.lang === 'ko') nw.enm = String(E.draft.enm || '').trim();
+    nw.senses = E.draft.senses.map(function (s) {
+      return { pos: String(s.pos || '').trim(), koDef: String(s.koDef || '').trim(), en: String(s.en || '').trim(), ex: String(s.ex || '').trim(), exKo: String(s.exKo || '').trim() };
+    }).filter(function (s) { return s.en || s.koDef; });
+    S.edit = null; S.msg = '';
+    putWord(nw);
+  }
+
+  /* ---------- 백업 ---------- */
+  function exportWords() {
+    try {
+      var blob = new Blob([JSON.stringify(S.words, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'company-words-' + today() + '.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    } catch (e) { S.msg = '내보내기에 실패했어요.'; render(); }
+  }
+  function importWords(file) {
+    var fr = new FileReader();
+    fr.onload = function () {
+      try {
+        var arr = JSON.parse(fr.result);
+        if (!Array.isArray(arr)) throw new Error('bad');
+        var n = 0;
+        arr.forEach(function (w) {
+          if (!w || !w.id || !w.word || !Array.isArray(w.senses)) return;
+          if (S.words.some(function (x) { return x.id === w.id; })) return;
+          migrate([w]); putWord(w, true); n++;
+        });
+        S.msg = ''; S.note = n + '개를 가져왔어요.';
+      } catch (e) { S.msg = '파일을 읽지 못했어요. 이 앱에서 내보낸 .json 파일인지 확인해 주세요.'; }
+      render();
+    };
+    fr.readAsText(file);
+  }
+
+  /* ---------- 이벤트 ---------- */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (!b || b.disabled) return;
+    var act = b.getAttribute('data-act');
+    var D = b.dataset;
+    var Q = S.quiz;
+    switch (act) {
+      case 'tab': stopLoop(); S.tab = D.t; S.msg = ''; S.delArm = null; S.edit = null; render(); window.scrollTo(0, 0); break;
+      case 'amode': S.addMode = D.m; S.msg = ''; S.note = ''; render(); break;
+      case 'lookup': lookup(); break;
+      case 'save': saveFound(); break;
+      case 'discard': S.found = null; S.note = ''; S.msg = ''; render(); break;
+      case 'bulkgo': bulkLookup(); break;
+      case 'bulksave': bulkSaveAll(); break;
+      case 'sdrop': if (S.found) { S.found.senses.splice(Number(D.i), 1); render(); } break;
+      case 'bdrop': S.bulk.results.splice(Number(D.i), 1); render(); break;
+      case 'speak': playWord(D.t, D.a, D.l); break;
+      case 'loop': toggleLoop(D.t, D.l, b); break;
+      case 'toggle': S.open[D.id] = !S.open[D.id]; S.delArm = null; S.edit = null; render(); break;
+      case 'edit': startEdit(D.id); break;
+      case 'edsave': saveEdit(); break;
+      case 'edcancel': S.edit = null; S.msg = ''; render(); break;
+      case 'edsadd': collectEdit(); S.edit.draft.senses.push({ pos: '', koDef: '', en: '', ex: '', exKo: '' }); render(); break;
+      case 'edsdrop': collectEdit(); S.edit.draft.senses.splice(Number(D.i), 1); render(); break;
+      case 'kosave':
+        var el = document.getElementById('ko-' + D.id);
+        var w0 = S.words.find(function (x) { return x.id === D.id; });
+        if (el && w0) { var nw = JSON.parse(JSON.stringify(w0)); nw.ko = el.value.trim(); putWord(nw); }
+        break;
+      case 'del':
+        if (S.delArm === D.id) { S.delArm = null; if (S.edit && S.edit.id === D.id) S.edit = null; delWord(D.id); } else {
+          S.delArm = D.id; render();
+          var armId = D.id;
+          setTimeout(function () { if (S.delArm === armId) { S.delArm = null; render(); } }, 4000);
+        }
+        break;
+      case 'export': exportWords(); break;
+      case 'krsave':
+        var k1 = document.getElementById('kr-key'), k2 = document.getElementById('kr-base');
+        S.krKey = k1 ? k1.value.trim() : '';
+        S.krBase = k2 ? k2.value.trim() : '';
+        try { localStorage.setItem(LS_KRKEY, S.krKey); localStorage.setItem(LS_KRBASE, S.krBase); } catch (err) {}
+        S.msg = ''; S.note = S.krKey ? '한국어기초사전 설정을 저장했어요.' : '인증키를 지웠어요.';
+        render(); break;
+      case 'oxsave':
+        S.oxId = (document.getElementById('ox-id') || { value: '' }).value.trim();
+        S.oxKey = (document.getElementById('ox-key') || { value: '' }).value.trim();
+        S.oxBase = (document.getElementById('ox-base') || { value: '' }).value.trim();
+        try { localStorage.setItem(LS_OXID, S.oxId); localStorage.setItem(LS_OXKEY, S.oxKey); localStorage.setItem(LS_OXBASE, S.oxBase); } catch (err) {}
+        S.msg = ''; S.note = 'Oxford 설정을 저장했어요.';
+        render(); break;
+      case 'mailsave':
+        var m = document.getElementById('mail');
+        S.email = m ? m.value.trim() : '';
+        try { localStorage.setItem(LS_MAIL, S.email); } catch (err) {}
+        S.note = S.email ? '이메일을 저장했어요.' : '이메일을 지웠어요.';
+        render(); break;
+      case 'qdate': Q.dates[D.d] = !Q.dates[D.d]; render(); break;
+      case 'qall': S.words.forEach(function (w) { Q.dates[w.date] = true; }); render(); break;
+      case 'qnone': Q.dates = {}; render(); break;
+      case 'qwrong': Q.onlyWrong = !Q.onlyWrong; render(); break;
+      case 'qmode': Q.mode = D.m; render(); break;
+      case 'qstart':
+        if (S.warp) break;
+        beep('ok');
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { startRun(pool(), 1); break; }
+        S.warp = true; render();
+        setTimeout(function () { S.warp = false; startRun(pool(), 1); }, 1100);
+        break;
+      case 'snd':
+        soundOn = !soundOn;
+        try { localStorage.setItem('companyWords:snd', soundOn ? 'on' : 'off'); } catch (err) {}
+        if (soundOn) beep('ok');
+        render(); break;
+      case 'pick': answerMC(Number(D.i)); break;
+      case 'submit': answerType(); break;
+      case 'hint': Q.run.hint = true; render(); break;
+      case 'next': stopLoop(); nextQ(); break;
+      case 'retry':
+        var ids = Q.run.wrongIds;
+        startRun(S.words.filter(function (w) { return ids.indexOf(w.id) >= 0; }), Q.run.round + 1);
+        break;
+      case 'qquit': stopLoop(); Q.run = null; render(); break;
+    }
+  });
+  document.addEventListener('input', function (e) {
+    var id = e.target && e.target.id;
+    if (id === 'q') S.q = e.target.value;
+    else if (id === 'bulk') S.bulkText = e.target.value;
+    else if (id === 'foundKo') S.foundKo = e.target.value;
+    else if (id === 'foundEn') S.foundEn = e.target.value;
+  });
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.id === 'imp' && e.target.files && e.target.files[0]) importWords(e.target.files[0]);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    if (e.target && e.target.id === 'q') { S.q = e.target.value; lookup(); }
+    if (e.target && e.target.id === 'ans') answerType();
+  });
+
+  S.words = lsLoad();
+  try { S.email = localStorage.getItem(LS_MAIL) || ''; var savedKey = localStorage.getItem(LS_KRKEY); S.krKey = savedKey === null ? KR_KEY_BUILTIN : savedKey; S.krBase = localStorage.getItem(LS_KRBASE) || '';
+    var o1 = localStorage.getItem(LS_OXID), o2 = localStorage.getItem(LS_OXKEY);
+    S.oxId = o1 === null ? OX_ID_BUILTIN : o1; S.oxKey = o2 === null ? OX_KEY_BUILTIN : o2; S.oxBase = localStorage.getItem(LS_OXBASE) || ''; } catch (e) {}
+  var dc = document.getElementById('decor');
+  if (dc) dc.innerHTML = '<div class="planet"></div><div class="ship">' + SHIP_SVG + '</div><div class="drone">' + robotSVG('idle') + '</div>';
+  render();
+})();
+
+</script>
+</body>
+</html>
